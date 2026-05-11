@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0A0A0A" />
+<title>PickToMic — Capture the Mic in the Pickup | IdAudio</title>
+<meta name="description" content="The plugin that turns any acoustic-instrument pickup into a studio-mic sound. IR engine trained on real DI ↔ mic pairs — built for live performance, studio capture, and mixing." />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="PickToMic — Capture the Mic in the Pickup" />
+<meta property="og:description" content="Turn any pickup into a mic. IR engine for acoustic instruments." />
+<meta property="og:image" content="assets/images/og-image.png" />
+<!-- PLACEHOLDER: replace with production URL -->
+<meta property="og:url" content="#TODO_SITE_URL" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="PickToMic — Capture the Mic in the Pickup" />
+<meta name="twitter:description" content="Turn any pickup into a mic. IR engine for acoustic instruments." />
+<meta name="twitter:image" content="assets/images/og-image.png" />
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PickToMic",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "macOS 13+, Windows 10/11",
+  "offers": {
+    "@type": "Offer",
+    "price": "TBD",
+    "priceCurrency": "USD"
+  },
+  "creator": {
+    "@type": "Organization",
+    "name": "IdAudio"
+  }
+}
+</script>
+
+<link rel="icon" href="assets/favicon.ico" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Global SVG defs — gradients referenced across the page -->
+<svg width="0" height="0" style="position:absolute; pointer-events:none" aria-hidden="true">
+  <defs>
+    <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#9b72f0" />
+      <stop offset="100%" stop-color="#5b9bf8" />
+    </linearGradient>
+    <linearGradient id="brandGradH" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9b72f0" />
+      <stop offset="100%" stop-color="#5b9bf8" />
+    </linearGradient>
+  </defs>
+</svg>
+
+<!-- ─────────────────────────── NAV ─────────────────────────── -->
+<nav class="nav" aria-label="Primary">
+  <a href="#top" class="nav-brand" aria-label="PickToMic home">
+    <svg class="brand-icon" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#9b72f0" />
+          <stop offset="100%" stop-color="#5b9bf8" />
+        </linearGradient>
+      </defs>
+      <rect x="4"  y="27" width="7" height="10" rx="3.5" fill="url(#brandGrad)" opacity=".25" />
+      <rect x="16" y="21" width="7" height="22" rx="3.5" fill="url(#brandGrad)" opacity=".5" />
+      <rect x="28" y="10" width="8" height="44" rx="4"   fill="url(#brandGrad)" />
+      <rect x="41" y="18" width="7" height="28" rx="3.5" fill="url(#brandGrad)" opacity=".5" />
+      <rect x="53" y="24" width="7" height="16" rx="3.5" fill="url(#brandGrad)" opacity=".25" />
+    </svg>
+    <span class="brand-text"><span class="brand-id">Id</span><span class="brand-audio">Audio</span></span>
+  </a>
+
+  <ul class="nav-links" role="list">
+    <li><a href="#demo">Listen</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#specs">Specs</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+
+  <div class="nav-cta">
+    <!-- PLACEHOLDER: replace with trial download URL -->
+    <a href="#TODO_TRIAL_DOWNLOAD" class="btn btn-ghost">Try Free</a>
+    <!-- PLACEHOLDER: replace with Lemon Squeezy checkout URL -->
+    <a href="#TODO_LEMONSQUEEZY_URL" class="btn btn-primary">Buy</a>
+  </div>
+
+  <button class="nav-burger" aria-label="Menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─────────────────────────── HERO ─────────────────────────── -->
+<header id="top" class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <canvas id="heroParticles"></canvas>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-grid"></div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow reveal">
+      <span class="eyebrow-dot"></span>
+      <span>PickToMic <span class="eyebrow-version">v1.0</span> · by IdAudio</span>
+    </div>
+
+    <h1 class="hero-title reveal">
+      <span class="hero-line">Capture the</span>
+      <span class="hero-line gradient-text">mic</span>
+      <span class="hero-line">in the pickup.</span>
+    </h1>
+
+    <p class="hero-sub reveal">
+      One plugin for every acoustic instrument with a pickup.<br/>
+      <span class="hero-sub-muted">Built for the stage. Engineered for the studio.</span>
+    </p>
+
+    <div class="hero-cta reveal">
+      <!-- PLACEHOLDER: replace with Lemon Squeezy checkout URL -->
+      <a href="#TODO_LEMONSQUEEZY_URL" class="btn btn-primary btn-lg">
+        <span class="btn-label">Buy Now</span>
+        <span class="btn-price">$TBD</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <!-- PLACEHOLDER: replace with trial download URL -->
+      <a href="#TODO_TRIAL_DOWNLOAD" class="btn btn-secondary btn-lg">
+        <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v13m0 0l-5-5m5 5l5-5M5 21h14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Free 14-Day Trial
+      </a>
+    </div>
+
+    <!-- Plugin screenshot — plain, no animation -->
+    <div class="hero-plugin reveal">
+      <picture>
+        <source srcset="assets/images/plugin-screenshot@2x.png 2x, assets/images/plugin-screenshot.png 1x" />
+        <img src="assets/images/plugin-screenshot.png"
+             alt="PickToMic plugin interface"
+             loading="eager"
+             decoding="async" />
+      </picture>
+    </div>
+
+    <!-- DAW badges -->
+    <div class="hero-daws reveal">
+      <span class="daws-label">Runs everywhere</span>
+      <div class="daws-list">
+        <span class="daw-chip">Logic Pro</span>
+        <span class="daw-chip">Ableton Live</span>
+        <span class="daw-chip">Pro Tools</span>
+        <span class="daw-chip">Cubase</span>
+        <span class="daw-chip">Studio One</span>
+        <span class="daw-chip">Reaper</span>
+        <span class="daw-chip">FL Studio</span>
+      </div>
+    </div>
+
+    <a href="#problem" class="hero-scroll" aria-label="Scroll down">
+      <span></span>
+    </a>
+  </div>
+</header>
+
+<!-- ─────────────────────────── PROBLEM / SOLUTION ─────────────────────────── -->
+<section id="problem" class="section section-problem">
+  <div class="container">
+    <div class="problem-grid">
+
+      <div class="problem-cell problem-cell-bad reveal">
+        <div class="cell-tag">The problem</div>
+        <h2 class="cell-title">Pickups never sound&nbsp;like&nbsp;the&nbsp;room.</h2>
+        <p class="cell-text">
+          A piezo or magnetic pickup captures vibration, not air. The result is honky, plasticky,
+          and missing everything that makes an acoustic instrument feel alive on stage or in a mix.
+        </p>
+        <div class="cell-wave cell-wave-bad">
+          <svg viewBox="0 0 400 80" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 40 L25 40 L25 10 L50 10 L50 70 L75 70 L75 18 L100 18 L100 62 L125 62 L125 22 L150 22 L150 58 L175 58 L175 26 L200 26 L200 54 L225 54 L225 30 L250 30 L250 50 L275 50 L275 32 L300 32 L300 48 L325 48 L325 34 L350 34 L350 46 L375 46 L375 38 L400 38" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="problem-cell problem-cell-good reveal">
+        <div class="cell-tag cell-tag-good">PickToMic</div>
+        <h2 class="cell-title">A real mic, every&nbsp;time.</h2>
+        <p class="cell-text">
+          Trained on hundreds of paired pickup &amp; microphone recordings of acoustic
+          instruments, PickToMic replaces the pickup signal with the depth, body, and air
+          of a studio-mic capture — in real&nbsp;time.
+        </p>
+        <div class="cell-wave cell-wave-good">
+          <svg viewBox="0 0 400 80" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0 40 C 15 35, 25 12, 40 14 C 55 16, 65 64, 80 66 C 95 68, 105 18, 120 20 C 135 22, 145 60, 160 58 C 175 56, 185 22, 200 24 C 215 26, 225 56, 240 54 C 255 52, 265 26, 280 28 C 295 30, 305 50, 320 48 C 335 46, 345 32, 360 34 C 375 36, 385 42, 400 40" />
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── AUDIO DEMO ─────────────────────────── -->
+<section id="demo" class="section section-demo">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Hear it</div>
+      <h2 class="section-title">Same take. <span class="gradient-text">Two worlds.</span></h2>
+      <p class="section-sub">Press play. Toggle between the raw pickup and the PickToMic output.</p>
+    </div>
+
+    <div class="demo-grid">
+
+      <article class="demo-card reveal" data-demo="classical">
+        <div class="demo-card-head">
+          <div class="demo-illustration" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <defs>
+                <radialGradient id="ill1" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#9b72f0" stop-opacity=".4" />
+                  <stop offset="100%" stop-color="transparent" />
+                </radialGradient>
+              </defs>
+              <circle cx="60" cy="60" r="58" fill="url(#ill1)" />
+              <path d="M60 18 C 38 18 32 42 32 60 C 32 86 46 102 60 102 C 74 102 88 86 88 60 C 88 42 82 18 60 18 Z M60 24 C 76 24 82 44 82 60 C 82 84 70 96 60 96 C 50 96 38 84 38 60 C 38 44 44 24 60 24 Z" fill="#e8e0f0" opacity=".15" stroke="#9b72f0" stroke-width=".8" />
+              <circle cx="60" cy="55" r="9" fill="#0a0a0a" stroke="#9b72f0" stroke-width="1" />
+              <line x1="60" y1="14" x2="60" y2="22" stroke="#5b9bf8" stroke-width="1.5" />
+              <line x1="58" y1="14" x2="58" y2="60" stroke="#888" stroke-width=".4" opacity=".5" />
+              <line x1="60" y1="14" x2="60" y2="60" stroke="#888" stroke-width=".4" opacity=".5" />
+              <line x1="62" y1="14" x2="62" y2="60" stroke="#888" stroke-width=".4" opacity=".5" />
+            </svg>
+          </div>
+          <div class="demo-card-meta">
+            <h3 class="demo-name">Classical Guitar</h3>
+            <p class="demo-desc">Nylon strings, finger-picked. Pickup vs. condenser at 12th fret.</p>
+          </div>
+        </div>
+
+        <div class="demo-viz">
+          <canvas class="demo-canvas" width="600" height="120" aria-hidden="true"></canvas>
+        </div>
+
+        <div class="demo-controls">
+          <button class="demo-play" aria-label="Play classical guitar demo">
+            <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+
+          <div class="demo-toggle" role="tablist" aria-label="Source toggle">
+            <button class="demo-toggle-btn is-active" data-src="before" role="tab" aria-selected="true">Pickup</button>
+            <button class="demo-toggle-btn" data-src="after" role="tab" aria-selected="false">PickToMic</button>
+            <span class="demo-toggle-thumb"></span>
+          </div>
+
+          <div class="demo-time">
+            <span class="demo-time-cur">0:00</span>
+            <span class="demo-time-sep">/</span>
+            <span class="demo-time-dur">0:00</span>
+          </div>
+        </div>
+
+        <!-- PLACEHOLDER: replace with real demo audio -->
+        <audio class="demo-audio" data-role="before" src="assets/audio/classical-before.mp3" preload="none"></audio>
+        <audio class="demo-audio" data-role="after"  src="assets/audio/classical-after.mp3"  preload="none"></audio>
+      </article>
+
+      <article class="demo-card reveal" data-demo="acoustic">
+        <div class="demo-card-head">
+          <div class="demo-illustration" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <defs>
+                <radialGradient id="ill2" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#5b9bf8" stop-opacity=".4" />
+                  <stop offset="100%" stop-color="transparent" />
+                </radialGradient>
+              </defs>
+              <circle cx="60" cy="60" r="58" fill="url(#ill2)" />
+              <path d="M60 16 C 30 16 24 46 24 64 C 24 92 42 106 60 106 C 78 106 96 92 96 64 C 96 46 90 16 60 16 Z" fill="#e8e0f0" opacity=".1" stroke="#5b9bf8" stroke-width=".8" />
+              <circle cx="60" cy="60" r="13" fill="#0a0a0a" stroke="#5b9bf8" stroke-width="1.2" />
+              <circle cx="60" cy="60" r="10" fill="none" stroke="#5b9bf8" stroke-width=".4" opacity=".6" />
+              <rect x="55" y="14" width="10" height="10" rx="2" fill="#0a0a0a" stroke="#5b9bf8" stroke-width=".8" />
+              <line x1="56" y1="16" x2="56" y2="60" stroke="#aaa" stroke-width=".4" opacity=".6" />
+              <line x1="58" y1="16" x2="58" y2="60" stroke="#aaa" stroke-width=".4" opacity=".6" />
+              <line x1="60" y1="16" x2="60" y2="60" stroke="#aaa" stroke-width=".4" opacity=".6" />
+              <line x1="62" y1="16" x2="62" y2="60" stroke="#aaa" stroke-width=".4" opacity=".6" />
+              <line x1="64" y1="16" x2="64" y2="60" stroke="#aaa" stroke-width=".4" opacity=".6" />
+            </svg>
+          </div>
+          <div class="demo-card-meta">
+            <h3 class="demo-name">Acoustic Guitar</h3>
+            <p class="demo-desc">Steel strings, strummed. Soundhole pickup vs. small-diaphragm condenser.</p>
+          </div>
+        </div>
+
+        <div class="demo-viz">
+          <canvas class="demo-canvas" width="600" height="120" aria-hidden="true"></canvas>
+        </div>
+
+        <div class="demo-controls">
+          <button class="demo-play" aria-label="Play acoustic guitar demo">
+            <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+          <div class="demo-toggle">
+            <button class="demo-toggle-btn is-active" data-src="before">Pickup</button>
+            <button class="demo-toggle-btn" data-src="after">PickToMic</button>
+            <span class="demo-toggle-thumb"></span>
+          </div>
+          <div class="demo-time">
+            <span class="demo-time-cur">0:00</span>
+            <span class="demo-time-sep">/</span>
+            <span class="demo-time-dur">0:00</span>
+          </div>
+        </div>
+
+        <!-- PLACEHOLDER -->
+        <audio class="demo-audio" data-role="before" src="assets/audio/acoustic-before.mp3" preload="none"></audio>
+        <audio class="demo-audio" data-role="after"  src="assets/audio/acoustic-after.mp3"  preload="none"></audio>
+      </article>
+
+      <article class="demo-card reveal" data-demo="oud">
+        <div class="demo-card-head">
+          <div class="demo-illustration" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <defs>
+                <radialGradient id="ill3" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#d4a574" stop-opacity=".4" />
+                  <stop offset="100%" stop-color="transparent" />
+                </radialGradient>
+              </defs>
+              <circle cx="60" cy="60" r="58" fill="url(#ill3)" />
+              <ellipse cx="60" cy="68" rx="32" ry="38" fill="#e8e0f0" opacity=".1" stroke="#d4a574" stroke-width=".8" />
+              <circle cx="60" cy="58" r="7" fill="#0a0a0a" stroke="#d4a574" stroke-width="1" />
+              <circle cx="50" cy="68" r="3" fill="none" stroke="#d4a574" stroke-width=".6" />
+              <circle cx="70" cy="68" r="3" fill="none" stroke="#d4a574" stroke-width=".6" />
+              <rect x="56" y="10" width="8" height="20" rx="2" fill="#0a0a0a" stroke="#d4a574" stroke-width=".8" />
+              <line x1="58" y1="12" x2="58" y2="58" stroke="#aaa" stroke-width=".4" opacity=".6" />
+              <line x1="60" y1="12" x2="60" y2="58" stroke="#aaa" stroke-width=".4" opacity=".6" />
+              <line x1="62" y1="12" x2="62" y2="58" stroke="#aaa" stroke-width=".4" opacity=".6" />
+            </svg>
+          </div>
+          <div class="demo-card-meta">
+            <h3 class="demo-name">Oud</h3>
+            <p class="demo-desc">11-string Arabic lute. Body resonance is everything — and that's exactly what a pickup misses.</p>
+          </div>
+        </div>
+
+        <div class="demo-viz">
+          <canvas class="demo-canvas" width="600" height="120" aria-hidden="true"></canvas>
+        </div>
+
+        <div class="demo-controls">
+          <button class="demo-play" aria-label="Play oud demo">
+            <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/></svg>
+          </button>
+          <div class="demo-toggle">
+            <button class="demo-toggle-btn is-active" data-src="before">Pickup</button>
+            <button class="demo-toggle-btn" data-src="after">PickToMic</button>
+            <span class="demo-toggle-thumb"></span>
+          </div>
+          <div class="demo-time">
+            <span class="demo-time-cur">0:00</span>
+            <span class="demo-time-sep">/</span>
+            <span class="demo-time-dur">0:00</span>
+          </div>
+        </div>
+
+        <!-- PLACEHOLDER -->
+        <audio class="demo-audio" data-role="before" src="assets/audio/oud-before.mp3" preload="none"></audio>
+        <audio class="demo-audio" data-role="after"  src="assets/audio/oud-after.mp3"  preload="none"></audio>
+      </article>
+
+    </div>
+
+    <p class="demo-foot reveal">
+      Headphones recommended. All demos are unprocessed except for the toggle between raw pickup and PickToMic output.
+    </p>
+  </div>
+</section>
+
+<!-- ─────────────────────────── USE CASES ─────────────────────────── -->
+<section id="use-cases" class="section section-cases">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Built for</div>
+      <h2 class="section-title">The stage. The studio. <span class="gradient-text">The mix.</span></h2>
+    </div>
+
+    <div class="cases-grid">
+
+      <article class="case-card tilt reveal">
+        <div class="case-illustration case-illustration-live">
+          <svg viewBox="0 0 200 140" aria-hidden="true">
+            <defs>
+              <linearGradient id="liveLight" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9b72f0" stop-opacity=".6" />
+                <stop offset="100%" stop-color="transparent" />
+              </linearGradient>
+            </defs>
+            <path d="M40 30 L60 90 L20 90 Z" fill="url(#liveLight)" />
+            <path d="M100 30 L120 90 L80 90 Z" fill="url(#liveLight)" />
+            <path d="M160 30 L180 90 L140 90 Z" fill="url(#liveLight)" />
+            <rect x="0" y="90" width="200" height="50" fill="#1a1a1a" />
+            <rect x="0" y="88" width="200" height="3" fill="#9b72f0" opacity=".4" />
+            <circle cx="100" cy="115" r="5" fill="#5b9bf8" />
+            <line x1="100" y1="120" x2="100" y2="138" stroke="#444" stroke-width="1.5" />
+          </svg>
+        </div>
+        <h3 class="case-title">Live Performance</h3>
+        <p class="case-text">
+          Plug into the board. Get the sound of a properly mic'd guitar without setup, without bleed,
+          without feedback. One instance per channel. Zero soundcheck stress.
+        </p>
+        <ul class="case-features">
+          <li>Ultra-low latency</li>
+          <li>Feedback-resistant</li>
+          <li>Stable in any room</li>
+        </ul>
+      </article>
+
+      <article class="case-card tilt reveal">
+        <div class="case-illustration case-illustration-studio">
+          <svg viewBox="0 0 200 140" aria-hidden="true">
+            <rect x="0" y="0" width="200" height="140" fill="#0f0f0f" />
+            <rect x="20" y="40" width="160" height="60" rx="4" fill="#1a1a1a" stroke="#333" />
+            <rect x="30" y="50" width="30" height="40" rx="2" fill="#5b9bf8" opacity=".2" />
+            <rect x="30" y="50" width="30" height="20" rx="2" fill="#5b9bf8" opacity=".6" />
+            <rect x="68" y="50" width="30" height="40" rx="2" fill="#9b72f0" opacity=".2" />
+            <rect x="68" y="58" width="30" height="14" rx="2" fill="#9b72f0" opacity=".6" />
+            <rect x="106" y="50" width="30" height="40" rx="2" fill="#5b9bf8" opacity=".2" />
+            <rect x="106" y="62" width="30" height="18" rx="2" fill="#5b9bf8" opacity=".6" />
+            <rect x="144" y="50" width="30" height="40" rx="2" fill="#9b72f0" opacity=".2" />
+            <rect x="144" y="54" width="30" height="22" rx="2" fill="#9b72f0" opacity=".6" />
+            <line x1="20" y1="110" x2="180" y2="110" stroke="#333" stroke-width="1" />
+            <text x="100" y="125" fill="#666" font-size="9" text-anchor="middle" font-family="JetBrains Mono">CH 1 — DI + MIC</text>
+          </svg>
+        </div>
+        <h3 class="case-title">Studio Recording</h3>
+        <p class="case-text">
+          Captured a DI pass but want the mic too? Feed PickToMic any DI and get a printable
+          mic-quality output. Or capture your own IR from a single paired take.
+        </p>
+        <ul class="case-features">
+          <li>Custom IR capture</li>
+          <li>47 factory presets</li>
+          <li>Save your own profiles</li>
+        </ul>
+      </article>
+
+      <article class="case-card tilt reveal">
+        <div class="case-illustration case-illustration-mix">
+          <svg viewBox="0 0 200 140" aria-hidden="true">
+            <rect x="0" y="0" width="200" height="140" fill="#0f0f0f" />
+            <g opacity=".8">
+              <rect x="20" y="20" width="160" height="14" rx="2" fill="#1a1a1a" stroke="#333" />
+              <rect x="22" y="22" width="120" height="10" rx="1" fill="#9b72f0" opacity=".3" />
+              <rect x="20" y="40" width="160" height="14" rx="2" fill="#1a1a1a" stroke="#333" />
+              <rect x="22" y="42" width="90" height="10" rx="1" fill="#5b9bf8" opacity=".3" />
+              <rect x="20" y="60" width="160" height="14" rx="2" fill="#1a1a1a" stroke="#9b72f0" stroke-width="1.5" />
+              <rect x="22" y="62" width="140" height="10" rx="1" fill="#9b72f0" opacity=".5" />
+              <rect x="20" y="80" width="160" height="14" rx="2" fill="#1a1a1a" stroke="#333" />
+              <rect x="22" y="82" width="70" height="10" rx="1" fill="#5b9bf8" opacity=".3" />
+              <rect x="20" y="100" width="160" height="14" rx="2" fill="#1a1a1a" stroke="#333" />
+              <rect x="22" y="102" width="110" height="10" rx="1" fill="#9b72f0" opacity=".3" />
+            </g>
+          </svg>
+        </div>
+        <h3 class="case-title">Mixing &amp; Production</h3>
+        <p class="case-text">
+          That old session with only a pickup take? Drop PickToMic on the channel and recover
+          the body, air, and depth as if you had mic'd it on the day.
+        </p>
+        <ul class="case-features">
+          <li>Sample-accurate offline</li>
+          <li>Up to 8x oversampling</li>
+          <li>Pristine print-ready output</li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── FEATURES ─────────────────────────── -->
+<section id="features" class="section section-features">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Under the hood</div>
+      <h2 class="section-title">Two engines. <span class="gradient-text">One signal chain.</span></h2>
+      <p class="section-sub">Convolution impulse responses, captured from real DI ↔ mic pairs. Blended in real time.</p>
+    </div>
+
+    <div class="features-bento">
+
+      <div class="bento-card bento-lg tilt reveal">
+        <div class="bento-icon">
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M4 16 Q 8 4, 16 16 T 28 16" stroke="url(#brandGrad)" stroke-width="2" fill="none" stroke-linecap="round" />
+            <circle cx="16" cy="16" r="3" fill="url(#brandGrad)" />
+          </svg>
+        </div>
+        <h3 class="bento-title">Tone &amp; Body dual IR</h3>
+        <p class="bento-text">
+          Two independent impulse-response faders — a Tone IR that defines the mic character, and
+          a Body IR that adds resonance and air. Blend them per instrument, per song, per room.
+        </p>
+        <div class="bento-meta">
+          <span class="meta-pill">Real DI ↔ mic capture</span>
+          <span class="meta-pill">Per-instrument IRs</span>
+        </div>
+      </div>
+
+      <div class="bento-card tilt reveal">
+        <div class="bento-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" stroke="url(#brandGrad)" stroke-width="2" fill="none"/><circle cx="16" cy="16" r="4" fill="url(#brandGrad)"/></svg></div>
+        <h3 class="bento-title">Capture your own IR</h3>
+        <p class="bento-text">
+          Record a paired DI + mic take of your instrument. PickToMic extracts a personal IR you
+          can save, recall, and share.
+        </p>
+      </div>
+
+      <div class="bento-card tilt reveal">
+        <div class="bento-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="6" width="20" height="20" rx="3" stroke="url(#brandGrad)" stroke-width="2" fill="none"/><line x1="6" y1="16" x2="26" y2="16" stroke="url(#brandGrad)" stroke-width="1.5"/></svg></div>
+        <h3 class="bento-title">47 factory presets</h3>
+        <p class="bento-text">
+          Curated profiles across 10 acoustic instruments — Bouzouki, Saz, Oud, Qanun, Cello,
+          guitars, ukulele, double bass and violin.
+        </p>
+      </div>
+
+      <div class="bento-card tilt reveal">
+        <div class="bento-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 24 L12 16 L18 20 L26 8" stroke="url(#brandGrad)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3 class="bento-title">Studio-grade DSP</h3>
+        <p class="bento-text">
+          EQ, log-domain compressor with soft knee, harmonic saturation, transient shaper,
+          stereo width, and a Hall/Plate reverb with sidechain ducking.
+        </p>
+      </div>
+
+      <div class="bento-card tilt reveal">
+        <div class="bento-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="10" width="6" height="12" rx="1" fill="url(#brandGrad)"/><rect x="13" y="6" width="6" height="20" rx="1" fill="url(#brandGrad)"/><rect x="22" y="12" width="6" height="8" rx="1" fill="url(#brandGrad)"/></svg></div>
+        <h3 class="bento-title">Up to 8× oversampling</h3>
+        <p class="bento-text">
+          Independent online / offline oversampling — keep CPU low while tracking and print
+          ultra-clean masters at render time.
+        </p>
+      </div>
+
+      <div class="bento-card tilt reveal">
+        <div class="bento-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 L26 10 L26 22 L16 28 L6 22 L6 10 Z" stroke="url(#brandGrad)" stroke-width="2" fill="none" stroke-linejoin="round"/></svg></div>
+        <h3 class="bento-title">3 themes</h3>
+        <p class="bento-text">
+          Dark&nbsp;Neon, Obsidian, and Monolith. Pick the look that disappears into your session.
+        </p>
+      </div>
+
+      <div class="bento-card tilt reveal">
+        <div class="bento-icon"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 16 L14 22 L24 10" stroke="url(#brandGrad)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3 class="bento-title">14-day free trial</h3>
+        <p class="bento-text">
+          Full version, no watermarks, no nags during a session. Just a quiet timer.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── SPECS ─────────────────────────── -->
+<section id="specs" class="section section-specs">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Technical</div>
+      <h2 class="section-title">Specs</h2>
+    </div>
+
+    <div class="specs-grid">
+
+      <div class="spec-block reveal">
+        <h4 class="spec-head">Platforms</h4>
+        <dl class="spec-list">
+          <div><dt>macOS</dt><dd>13.0+ · Universal (Apple Silicon &amp; Intel)</dd></div>
+          <div><dt>Windows</dt><dd>10 / 11 · 64-bit</dd></div>
+        </dl>
+      </div>
+
+      <div class="spec-block reveal">
+        <h4 class="spec-head">Formats</h4>
+        <dl class="spec-list">
+          <div><dt>macOS</dt><dd>AU · VST3</dd></div>
+          <div><dt>Windows</dt><dd>VST3</dd></div>
+          <div><dt>AAX</dt><dd>Not at launch</dd></div>
+        </dl>
+      </div>
+
+      <div class="spec-block reveal">
+        <h4 class="spec-head">Audio</h4>
+        <dl class="spec-list">
+          <div><dt>Sample rates</dt><dd>44.1 – 192 kHz</dd></div>
+          <div><dt>Channels</dt><dd>Mono &amp; Stereo</dd></div>
+          <div><dt>Latency</dt><dd>Ultra-low, suitable for live monitoring</dd></div>
+          <div><dt>Oversampling</dt><dd>1× – 8× online, 1× – 4× offline</dd></div>
+        </dl>
+      </div>
+
+      <div class="spec-block reveal">
+        <h4 class="spec-head">Engine</h4>
+        <dl class="spec-list">
+          <div><dt>IR engine</dt><dd>Dual IR convolution — Tone + Body</dd></div>
+          <div><dt>Sound source</dt><dd>Real DI ↔ mic recordings (no modelling)</dd></div>
+          <div><dt>Reverb tail</dt><dd>Up to 10 s (Hall) / 6 s (Plate)</dd></div>
+          <div><dt>License</dt><dd>Local activation (no online check)</dd></div>
+        </dl>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── PRICING ─────────────────────────── -->
+<section id="pricing" class="section section-pricing">
+  <div class="container">
+
+    <div class="section-head reveal">
+      <div class="section-eyebrow">One license. Forever.</div>
+      <h2 class="section-title">Simple <span class="gradient-text">pricing.</span></h2>
+    </div>
+
+    <div class="pricing-card reveal">
+      <div class="pricing-border"></div>
+      <div class="pricing-inner">
+        <div class="pricing-top">
+          <div class="pricing-tag">Full license</div>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-amount">TBD</span>
+          </div>
+          <div class="pricing-sub">one-time payment · perpetual license</div>
+        </div>
+
+        <ul class="pricing-features" role="list">
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> All 47 factory presets &amp; future packs</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> Free updates for the v1.x lifecycle</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 3 activations · transferable</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> Email support, direct from the developer</li>
+          <li><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> 30-day money-back guarantee</li>
+        </ul>
+
+        <div class="pricing-cta">
+          <!-- PLACEHOLDER: replace with Lemon Squeezy checkout URL -->
+          <a href="#TODO_LEMONSQUEEZY_URL" class="btn btn-primary btn-lg btn-block">Buy PickToMic</a>
+          <!-- PLACEHOLDER: replace with trial download URL -->
+          <a href="#TODO_TRIAL_DOWNLOAD" class="btn btn-ghost btn-block">Try free for 14 days</a>
+        </div>
+
+        <p class="pricing-foot">Secure checkout via Lemon Squeezy. VAT included where applicable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── FAQ ─────────────────────────── -->
+<section id="faq" class="section section-faq">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Questions</div>
+      <h2 class="section-title">Frequently asked.</h2>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item reveal">
+        <summary>What is PickToMic, exactly?</summary>
+        <div class="faq-body">
+          <p>A real-time audio plugin that takes the signal from any pickup on an acoustic instrument and reshapes it into the sound of a studio microphone capture. Under the hood it runs a dual IR convolution engine — a Tone IR plus a Body IR — derived from hundreds of paired DI &amp; microphone recordings.</p>
+        </div>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>Which instruments are supported?</summary>
+        <div class="faq-body">
+          <p>10 acoustic instruments at launch: Acoustic Guitar, Classical Guitar, Bouzouki, Saz, Oud, Qanun, Cello, Double Bass, Ukulele, and Violin — with 47 curated factory presets. Any acoustic instrument with a pickup will benefit; the presets just give you a calibrated starting point.</p>
+        </div>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>How does the 14-day trial work?</summary>
+        <div class="faq-body">
+          <p>Download, install, run. The full plugin works for 14 days with zero feature limits and no audio watermarks. After the trial expires, you can buy a license without reinstalling.</p>
+        </div>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>Can I move my license to another computer?</summary>
+        <div class="faq-body">
+          <p>Yes. A single license activates on up to 3 machines, and you can deactivate from any machine at any time. If a computer dies or is lost, just email us and we'll reset that slot for you.</p>
+        </div>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>Does it need an internet connection to run?</summary>
+        <div class="faq-body">
+          <p>No. Activation happens once at install — after that PickToMic runs fully offline. Your sessions never call home.</p>
+        </div>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>What about latency for live use?</summary>
+        <div class="faq-body">
+          <p>PickToMic uses lightweight IR convolution — latency is well inside what most live monitoring rigs already add. Suitable for in-ear monitors and stage use without noticeable delay.</p>
+        </div>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>Is there an AAX (Pro Tools native) build?</summary>
+        <div class="faq-body">
+          <p>Not at launch. PickToMic ships as AU and VST3 on macOS, and VST3 on Windows. AAX is on the roadmap — drop us a line if you need it.</p>
+        </div>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary>What's the refund policy?</summary>
+        <div class="faq-body">
+          <p>30-day money-back guarantee. If PickToMic doesn't work for you, just write — we refund, no questions asked.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── FINAL CTA ─────────────────────────── -->
+<section class="section section-final">
+  <div class="container">
+    <div class="final-card reveal">
+      <div class="final-glow"></div>
+      <h2 class="final-title">Ready to sound like<br/>you brought the room with you?</h2>
+      <div class="final-cta">
+        <!-- PLACEHOLDER -->
+        <a href="#TODO_LEMONSQUEEZY_URL" class="btn btn-primary btn-lg">Buy PickToMic</a>
+        <!-- PLACEHOLDER -->
+        <a href="#TODO_TRIAL_DOWNLOAD" class="btn btn-secondary btn-lg">Free 14-Day Trial</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── FOOTER ─────────────────────────── -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <svg class="brand-icon" viewBox="0 0 64 64" aria-hidden="true">
+          <rect x="4"  y="27" width="7" height="10" rx="3.5" fill="url(#brandGrad)" opacity=".25" />
+          <rect x="16" y="21" width="7" height="22" rx="3.5" fill="url(#brandGrad)" opacity=".5" />
+          <rect x="28" y="10" width="8" height="44" rx="4"   fill="url(#brandGrad)" />
+          <rect x="41" y="18" width="7" height="28" rx="3.5" fill="url(#brandGrad)" opacity=".5" />
+          <rect x="53" y="24" width="7" height="16" rx="3.5" fill="url(#brandGrad)" opacity=".25" />
+        </svg>
+        <span class="brand-text"><span class="brand-id">Id</span><span class="brand-audio">Audio</span></span>
+      </div>
+      <p class="footer-tagline">Capture the mic in the pickup.</p>
+    </div>
+
+    <div class="footer-grid">
+      <div>
+        <h5>Product</h5>
+        <ul role="list">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#specs">Specs</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#TODO_TRIAL_DOWNLOAD">Download Trial</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support</h5>
+        <ul role="list">
+          <li><a href="#TODO_SUPPORT_EMAIL">Contact</a></li>
+          <li><a href="#TODO_DOCS_URL">Documentation</a></li>
+          <li><a href="#TODO_USER_MANUAL_URL">User Manual</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul role="list">
+          <li><a href="#TODO_PRIVACY_URL">Privacy</a></li>
+          <li><a href="#TODO_TERMS_URL">Terms</a></li>
+          <li><a href="#TODO_REFUND_URL">Refund Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 IdAudio. All rights reserved.</p>
+      <p>Designed and developed by Idan Armoni.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/animations.js"></script>
+<script src="js/visualizer.js"></script>
+<script src="js/audio-player.js"></script>
+
+</body>
+</html>
