@@ -2,8 +2,9 @@
    Uses real <audio> elements (data-src-pickup / data-src-picktomic) for playback.
    Curves are stylised — animated procedurally; not tied to real spectrum. */
 (() => {
-  const PICKUP = "#F26B5E";
-  const PTM    = "#E255A8";
+  const PICKUP = "#f08a5d";
+  const PTM    = "#9b72f0";
+  const PTM_2  = "#5b9bf8";
 
   document.querySelectorAll('.ptm-demo .demo-card').forEach((card, cardIdx) => {
     const cvs    = card.querySelector('.demo-analyzer canvas');
@@ -184,18 +185,39 @@
       }
       return ys;
     }
-    function strokeCurve(ys, color, w, alpha, glow) {
-      ctx.save(); ctx.lineWidth = w; ctx.strokeStyle = color; ctx.globalAlpha = alpha;
-      if (glow) { ctx.shadowColor = color; ctx.shadowBlur = 14; }
+    function strokeCurve(ys, kind, w, alpha, glow) {
+      const W = cvs.clientWidth;
+      let stroke;
+      if (kind === 'ptm') {
+        const g = ctx.createLinearGradient(0, 0, W, 0);
+        g.addColorStop(0, PTM); g.addColorStop(1, PTM_2);
+        stroke = g;
+      } else {
+        stroke = PICKUP;
+      }
+      ctx.save(); ctx.lineWidth = w; ctx.strokeStyle = stroke; ctx.globalAlpha = alpha;
+      if (glow) { ctx.shadowColor = kind === 'ptm' ? PTM : PICKUP; ctx.shadowBlur = 14; }
       ctx.beginPath();
       for (let x = 0; x < ys.length; x++) { if (x === 0) ctx.moveTo(x, ys[x]); else ctx.lineTo(x, ys[x]); }
       ctx.stroke(); ctx.restore();
     }
-    function fillUnder(ys, color) {
-      const H = cvs.clientHeight;
-      const grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, color + "38"); grad.addColorStop(1, color + "00");
-      ctx.save(); ctx.fillStyle = grad; ctx.beginPath();
+    function fillUnder(ys, kind) {
+      const W = cvs.clientWidth, H = cvs.clientHeight;
+      let fill;
+      if (kind === 'ptm') {
+        const g = ctx.createLinearGradient(0, 0, 0, H);
+        // top: blend of purple+blue at alpha .22 → bottom transparent
+        g.addColorStop(0, 'rgba(155,114,240,.22)');
+        g.addColorStop(.5, 'rgba(123,135,244,.14)');
+        g.addColorStop(1, 'rgba(91,155,248,0)');
+        fill = g;
+      } else {
+        const g = ctx.createLinearGradient(0, 0, 0, H);
+        g.addColorStop(0, 'rgba(240,138,93,.22)');
+        g.addColorStop(1, 'rgba(240,138,93,0)');
+        fill = g;
+      }
+      ctx.save(); ctx.fillStyle = fill; ctx.beginPath();
       ctx.moveTo(0, ys[0]);
       for (let x = 1; x < ys.length; x++) ctx.lineTo(x, ys[x]);
       ctx.lineTo(ys.length - 1, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill(); ctx.restore();
