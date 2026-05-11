@@ -45,25 +45,36 @@
 /* ============================================================
    1. DEMO CARDS — A/B audio with live FFT curves
    ============================================================ */
-.ptm-demo { padding: 96px 0; background: var(--ptm-bg); }
-.ptm-demo .head { margin-bottom: 48px; max-width: 880px; }
+.ptm-demo { padding: 56px 0; background: var(--ptm-bg); }
+.ptm-demo .head { margin-bottom: 32px; max-width: 880px; }
 .ptm-demo h2 {
-  font-family: "Inter", system-ui, sans-serif; font-size: clamp(40px, 5vw, 72px);
+  font-family: "Inter", system-ui, sans-serif; font-size: clamp(36px, 4.4vw, 60px);
   line-height: .96; letter-spacing: -.035em; font-weight: 700;
-  margin: 18px 0 16px; color: var(--ptm-fg-1);
+  margin: 12px 0 12px; color: var(--ptm-fg-1);
 }
-.ptm-demo .lead { font-size: 17px; line-height: 1.55; color: var(--ptm-fg-2); max-width: 54ch; }
-.ptm-demo .stack { display: flex; flex-direction: column; gap: 24px; max-width: 880px; margin: 0 auto; }
+.ptm-demo .lead { font-size: 16px; line-height: 1.5; color: var(--ptm-fg-2); max-width: 54ch; }
+
+/* 3 demo cards in one row on desktop, stack on narrow screens */
+.ptm-demo .stack {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .ptm-demo .stack { grid-template-columns: 1fr; }
+}
 
 .ptm-demo .demo-card {
   background:
     linear-gradient(150deg, rgba(155,114,240,.06) 0%, transparent 60%),
     var(--ptm-card-bg);
   border: 1px solid rgba(155,114,240,.22);
-  border-radius: 18px; padding: 32px;
+  border-radius: 14px; padding: 20px;
   box-shadow:
-    0 40px 100px -30px rgba(155,114,240,.20),
-    0 30px 80px  -30px rgba(0,0,0,.7);
+    0 30px 60px -30px rgba(155,114,240,.20),
+    0 20px 40px -30px rgba(0,0,0,.6);
 }
 .ptm-demo .demo-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
 .ptm-demo .demo-head .meta .num {
@@ -147,7 +158,7 @@
 /* ============================================================
    2. BUILT FOR — Live / Studio / Mix
    ============================================================ */
-.ptm-builtfor { padding: 96px 0; background: var(--ptm-bg); }
+.ptm-builtfor { padding: 56px 0; background: var(--ptm-bg); }
 .ptm-builtfor h2 {
   font-family: "Inter", system-ui, sans-serif; font-size: clamp(40px, 5vw, 72px);
   line-height: .96; letter-spacing: -.035em; font-weight: 700;
