@@ -357,13 +357,12 @@ ul { list-style: none; }
   width: 100%;
   height: auto;
   display: block;
-  /* Soft feather only at the very edges (last ~4%). Corners only. */
+  /* Feather sides only; keep bottom hard so knob labels stay legible. */
   -webkit-mask-image:
     linear-gradient(180deg,
       transparent 0%,
       black 1%,
-      black 99%,
-      transparent 100%),
+      black 100%),
     linear-gradient(90deg,
       transparent 0%,
       black 1%,
@@ -374,8 +373,7 @@ ul { list-style: none; }
     linear-gradient(180deg,
       transparent 0%,
       black 1%,
-      black 99%,
-      transparent 100%),
+      black 100%),
     linear-gradient(90deg,
       transparent 0%,
       black 1%,
