@@ -1,0 +1,169 @@
+/* ============================================================
+   PickToMic handoff components — scoped under .ptm-*
+   Drop-in: demo card (A/B) + Built For (3 panels)
+   ============================================================ */
+
+:root {
+  --ptm-ink:        #0B0612;
+  --ptm-plum:       #1A0F2C;
+  --ptm-cream:      #F2EBDD;
+  --ptm-magenta:    #E255A8;
+  --ptm-magenta-2:  #C53F8F;
+  --ptm-pickup:     #F26B5E;
+  --ptm-line-d:     rgba(255,255,255,.10);
+  --ptm-fg-1:       #F2EBDD;
+  --ptm-fg-2:       #C0B5CF;
+  --ptm-fg-3:       #9B8FB0;
+}
+
+/* shared atoms */
+.ptm-wrap { max-width: 1320px; margin: 0 auto; padding: 0 32px; }
+.ptm-eyebrow {
+  font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--ptm-magenta);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.ptm-eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+
+/* ============================================================
+   1. DEMO CARDS — A/B audio with live FFT curves
+   ============================================================ */
+.ptm-demo { padding: 96px 0; background: var(--ptm-ink); }
+.ptm-demo .head { margin-bottom: 48px; max-width: 880px; }
+.ptm-demo h2 {
+  font-family: "Geist", sans-serif; font-size: clamp(40px, 5vw, 72px);
+  line-height: .96; letter-spacing: -.035em; font-weight: 600;
+  margin: 18px 0 16px; color: var(--ptm-fg-1);
+}
+.ptm-demo h2 em { font-family: "Instrument Serif", serif; font-style: italic; color: var(--ptm-magenta); font-weight: 400; }
+.ptm-demo .lead { font-size: 17px; line-height: 1.55; color: var(--ptm-fg-2); max-width: 54ch; }
+.ptm-demo .stack { display: flex; flex-direction: column; gap: 24px; max-width: 880px; margin: 0 auto; }
+
+.ptm-demo .demo-card {
+  background: linear-gradient(150deg, var(--ptm-plum) 0%, #110720 100%);
+  border: 1px solid rgba(226,85,168,.22);
+  border-radius: 18px; padding: 32px;
+  box-shadow: 0 40px 100px -30px rgba(226,85,168,.20), 0 30px 80px -30px rgba(0,0,0,.7);
+}
+.ptm-demo .demo-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; flex-wrap: wrap; }
+.ptm-demo .demo-head .meta .num {
+  font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: .22em;
+  text-transform: uppercase; color: var(--ptm-magenta); margin-bottom: 6px;
+}
+.ptm-demo .demo-head h3 {
+  font-family: "Geist", sans-serif; font-size: 28px; line-height: 1.05;
+  letter-spacing: -.02em; font-weight: 600; color: var(--ptm-fg-1); margin: 0 0 6px;
+}
+.ptm-demo .demo-head h3 em { font-family: "Instrument Serif", serif; font-style: italic; color: var(--ptm-magenta); font-weight: 400; }
+.ptm-demo .demo-head .sub { font-size: 14px; color: var(--ptm-fg-2); line-height: 1.5; max-width: 48ch; margin: 0; }
+
+.ptm-demo .demo-toggle {
+  display: inline-grid; grid-template-columns: 1fr 1fr; gap: 4px;
+  background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.06);
+  border-radius: 99px; padding: 4px;
+}
+.ptm-demo .demo-toggle button {
+  font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; padding: 10px 22px; border-radius: 99px;
+  border: 0; cursor: pointer; background: transparent; color: var(--ptm-fg-2);
+  transition: all 200ms cubic-bezier(.2,.7,.2,1);
+}
+.ptm-demo .demo-toggle button.sel[data-k="pickup"] { background: var(--ptm-pickup); color: #2B0907; }
+.ptm-demo .demo-toggle button.sel[data-k="picktomic"] { background: var(--ptm-magenta); color: #1A0814; }
+
+.ptm-demo .demo-analyzer {
+  position: relative; height: 220px; margin: 8px 0 16px;
+  background: #070310; border: 1px solid var(--ptm-line-d); border-radius: 12px;
+  padding: 14px 8px 22px; overflow: hidden;
+}
+.ptm-demo .demo-analyzer canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.ptm-demo .demo-analyzer .labels { position: absolute; inset: 0; pointer-events: none; }
+.ptm-demo .demo-analyzer .lbl {
+  position: absolute; top: 14px;
+  font-family: "Geist Mono", monospace; font-size: 10px; letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.ptm-demo .demo-analyzer .lbl.l { left: 16px; color: var(--ptm-pickup); }
+.ptm-demo .demo-analyzer .lbl.r { right: 16px; color: var(--ptm-magenta); }
+.ptm-demo .demo-analyzer .lbl.dim { opacity: .45; }
+.ptm-demo .demo-analyzer .axis {
+  position: absolute; left: 0; right: 0; bottom: 6px; padding: 0 12px;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  font-family: "Geist Mono", monospace; font-size: 9px;
+  color: var(--ptm-fg-3); letter-spacing: .08em;
+}
+.ptm-demo .demo-analyzer .axis span:nth-child(2),
+.ptm-demo .demo-analyzer .axis span:nth-child(3),
+.ptm-demo .demo-analyzer .axis span:nth-child(4) { text-align: center; }
+.ptm-demo .demo-analyzer .axis span:last-child { text-align: right; }
+
+.ptm-demo .demo-transport { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+.ptm-demo .demo-play {
+  width: 42px; height: 42px; border-radius: 99px;
+  border: 1px solid rgba(255,255,255,.18); background: transparent;
+  color: var(--ptm-fg-1); display: grid; place-items: center; cursor: pointer;
+  transition: all 180ms ease;
+}
+.ptm-demo .demo-play:hover { border-color: var(--ptm-magenta); color: var(--ptm-magenta); }
+.ptm-demo .demo-time { font-family: "Geist Mono", monospace; font-size: 12px; color: var(--ptm-fg-3); letter-spacing: .06em; }
+.ptm-demo .demo-scrub { flex: 1; height: 3px; background: rgba(255,255,255,.10); border-radius: 99px; position: relative; overflow: hidden; cursor: pointer; }
+.ptm-demo .demo-scrub::after {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--p, 0%);
+  background: var(--ptm-magenta); box-shadow: 0 0 8px var(--ptm-magenta);
+}
+.ptm-demo .demo-mode { font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ptm-fg-3); }
+.ptm-demo .demo-mode b { color: var(--ptm-magenta); font-weight: 500; }
+
+.ptm-demo .demo-foot { text-align: center; color: var(--ptm-fg-3); font-size: 13px; margin-top: 24px; max-width: 880px; margin-left: auto; margin-right: auto; }
+
+/* ============================================================
+   2. BUILT FOR — Live / Studio / Mix
+   ============================================================ */
+.ptm-builtfor { padding: 96px 0; background: var(--ptm-ink); }
+.ptm-builtfor h2 {
+  font-family: "Geist", sans-serif; font-size: clamp(40px, 5vw, 72px);
+  line-height: .96; letter-spacing: -.035em; font-weight: 600;
+  margin: 18px 0 56px; max-width: 22ch; color: var(--ptm-fg-1);
+}
+.ptm-builtfor h2 em { font-family: "Instrument Serif", serif; font-style: italic; color: var(--ptm-magenta); font-weight: 400; }
+
+.ptm-builtfor .bf-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.ptm-builtfor .bf-card {
+  background: linear-gradient(180deg, rgba(226,85,168,.04), transparent 60%), var(--ptm-plum);
+  border: 1px solid rgba(255,255,255,.06); border-radius: 16px;
+  overflow: hidden; display: flex; flex-direction: column;
+  transition: border-color 240ms ease, transform 240ms ease;
+}
+.ptm-builtfor .bf-card:hover { border-color: rgba(226,85,168,.30); transform: translateY(-2px); }
+.ptm-builtfor .bf-illo {
+  height: 144px; padding: 20px 22px 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.025), transparent);
+  border-bottom: 1px solid var(--ptm-line-d);
+}
+.ptm-builtfor .bf-body { padding: 24px 24px 26px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+.ptm-builtfor .bf-tag {
+  font-family: "Geist Mono", monospace; font-size: 11px; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--ptm-magenta);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.ptm-builtfor .bf-tag .roman { color: var(--ptm-fg-3); }
+.ptm-builtfor .bf-card h3 {
+  font-family: "Geist", sans-serif; font-size: 24px; line-height: 1.1;
+  letter-spacing: -.02em; font-weight: 600; color: var(--ptm-fg-1); margin: 0;
+}
+.ptm-builtfor .bf-card h3 em { font-family: "Instrument Serif", serif; font-style: italic; color: var(--ptm-magenta); font-weight: 400; }
+.ptm-builtfor .bf-card p { font-size: 14px; line-height: 1.55; color: var(--ptm-fg-2); margin: 0; }
+.ptm-builtfor .bf-card ul { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.ptm-builtfor .bf-card li {
+  font-family: "Geist Mono", monospace; font-size: 12px; color: var(--ptm-fg-2);
+  letter-spacing: .02em; padding-left: 14px; position: relative;
+}
+.ptm-builtfor .bf-card li::before {
+  content: ""; position: absolute; left: 0; top: 7px; width: 5px; height: 5px;
+  border-radius: 99px; background: var(--ptm-magenta);
+}
+
+@media (max-width: 980px) {
+  .ptm-builtfor .bf-grid { grid-template-columns: 1fr; }
+  .ptm-demo .demo-head { flex-direction: column; align-items: flex-start; }
+}
