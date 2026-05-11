@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PickToMic — User Manual</title>
+<style>
+  :root {
+    --bg:        #0a0810;
+    --bg-elev:   #121218;
+    --surface:   #18141e;
+    --surface-2: #201c28;
+    --line:      #2a2434;
+    --line-soft: #1d1826;
+
+    --magenta:   #b848c0;
+    --magenta-2: #e070d0;
+    --orange:    #ff7844;
+    --green:     #5ee89a;
+
+    --text:      #d8d0e0;
+    --text-mute: #8a82a0;
+    --text-dim:  #5a5470;
+    --white:     #f4f0fa;
+
+    --radius:    14px;
+    --radius-sm: 8px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    color: var(--text);
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(1100px 600px at 18% -8%, rgba(184,72,192,0.10), transparent 60%),
+      radial-gradient(900px 500px at 92% 6%, rgba(255,120,68,0.05), transparent 60%),
+      var(--bg);
+    min-height: 100vh;
+  }
+
+  ::selection { background: rgba(184,72,192,0.35); color: var(--white); }
+
+  .layout {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 40px 96px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 56px;
+  }
+
+  /* ─── Sidebar ─── */
+  aside {
+    position: sticky;
+    top: 36px;
+    align-self: start;
+    font-size: 13px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .brand-mark {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--magenta) 0%, var(--orange) 100%);
+    box-shadow: 0 0 0 1px rgba(184,72,192,0.35), 0 8px 22px rgba(184,72,192,0.20);
+  }
+  .brand-name {
+    font-weight: 700;
+    color: var(--white);
+    font-size: 15px;
+    letter-spacing: -0.2px;
+  }
+  .brand-tag {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  nav ol {
+    list-style: none;
+    counter-reset: nav;
+  }
+  nav li { counter-increment: nav; margin: 2px 0; }
+  nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: var(--text-mute);
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    transition: color .15s, background .15s;
+  }
+  nav a::before {
+    content: counter(nav, decimal-leading-zero);
+    color: var(--text-dim);
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+  }
+  nav a:hover { color: var(--white); background: rgba(184,72,192,0.06); }
+
+  /* ─── Main column ─── */
+  main { min-width: 0; }
+
+  .hero {
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .hero .eyebrow {
+    color: var(--magenta-2);
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: 56px;
+    line-height: 1.05;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(120deg, var(--magenta-2) 0%, var(--orange) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero .lead {
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--text);
+    max-width: 640px;
+    font-weight: 400;
+  }
+  .hero .meta {
+    margin-top: 28px;
+    display: flex;
+    gap: 24px;
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .hero .meta span strong { color: var(--text-mute); font-weight: 500; }
+
+  /* ─── Sections ─── */
+  section { margin-bottom: 64px; scroll-margin-top: 28px; }
+  section h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--magenta-2);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  section h2 + .title {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: -0.6px;
+    margin-bottom: 22px;
+    line-height: 1.2;
+  }
+  section p {
+    margin-bottom: 14px;
+    max-width: 680px;
+  }
+  section p.lead {
+    font-size: 17px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  section strong { color: var(--white); font-weight: 600; }
+  section em { color: var(--magenta-2); font-style: normal; font-weight: 500; }
+
+  /* ─── Steps ─── */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin: 18px 0;
+  }
+  .steps li {
+    counter-increment: step;
+    position: relative;
+    padding: 14px 0 14px 52px;
+    border-top: 1px solid var(--line-soft);
+    max-width: 680px;
+  }
+  .steps li:last-child { border-bottom: 1px solid var(--line-soft); }
+  .steps li::before {
+    content: counter(step, decimal-leading-zero);
+    position: absolute;
+    left: 0; top: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--magenta-2);
+    letter-spacing: 1.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .steps li strong { display: block; color: var(--white); margin-bottom: 2px; font-weight: 600; }
+  .steps li span { color: var(--text-mute); font-size: 14px; }
+
+  /* ─── Cards (three IRs etc.) ─── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 22px 0;
+  }
+  .card {
+    padding: 22px 20px;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elev) 100%);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: rgba(184,72,192,0.30); }
+  .card .label {
+    font-size: 10px;
+    color: var(--magenta-2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .card .name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+    letter-spacing: -0.2px;
+  }
+  .card .desc { font-size: 13px; color: var(--text-mute); line-height: 1.5; }
+
+  /* ─── Knob row ─── */
+  .knob-list {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px 24px;
+    margin: 14px 0;
+    border-top: 1px solid var(--line-soft);
+    padding-top: 14px;
+    max-width: 680px;
+  }
+  .knob-list dt {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .knob-list dd {
+    color: var(--text-mute);
+    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  /* ─── Callouts ─── */
+  .callout {
+    margin: 22px 0;
+    padding: 16px 20px;
+    background: rgba(184,72,192,0.06);
+    border-left: 2px solid var(--magenta);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    font-size: 14px;
+    color: var(--text);
+    max-width: 680px;
+  }
+  .callout::before {
+    content: 'Tip';
+    display: block;
+    font-size: 10px;
+    color: var(--magenta-2);
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .callout.note { background: rgba(255,120,68,0.06); border-left-color: var(--orange); }
+  .callout.note::before { content: 'Note'; color: var(--orange); }
+
+  /* ─── Screenshot wrapper ─── */
+  .shot {
+    margin: 22px 0 6px;
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    padding: 14px;
+    overflow: hidden;
+  }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 6px; }
+  /* Compact (centered, narrower) variants */
+  .shot.compact { max-width: 560px; margin-left: auto; margin-right: auto; }
+  .shot.compact + .caption { text-align: center; }
+  .shot.small { max-width: 440px; margin-left: auto; margin-right: auto; padding: 12px; }
+  .shot.small + .caption { text-align: center; }
+  .shot.tiny { max-width: 280px; margin-left: auto; margin-right: auto; padding: 10px; }
+  .shot.tiny + .caption { text-align: center; }
+
+  /* ─── Floated figures (image flows inside the text) ─── */
+  figure.figure {
+    background: var(--bg-elev);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    padding: 12px;
+    margin: 6px 0 18px;
+  }
+  figure.figure img { display: block; width: 100%; height: auto; border-radius: 6px; }
+  figure.figure figcaption {
+    color: var(--text-dim);
+    font-size: 11.5px;
+    letter-spacing: 0.4px;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 1.4;
+  }
+  figure.figure.right { float: right; clear: right; margin-left: 28px; max-width: 360px; }
+  figure.figure.left  { float: left;  clear: left;  margin-right: 28px; max-width: 360px; }
+  figure.figure.small.right, figure.figure.small.left { max-width: 320px; }
+  figure.figure.tiny.right,  figure.figure.tiny.left  { max-width: 200px; }
+  /* Sections clear floats so next heading starts cleanly */
+  section::after { content: ""; display: table; clear: both; }
+  @media (max-width: 860px) {
+    figure.figure.right, figure.figure.left {
+      float: none; margin: 22px auto; max-width: 100%;
+    }
+  }
+  .shot + .caption {
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  /* Placeholder when screenshot not yet captured */
+  .shot.placeholder {
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background:
+      repeating-linear-gradient(45deg,
+        rgba(184,72,192,0.04) 0 12px,
+        transparent 12px 24px),
+      var(--bg-elev);
+  }
+
+  /* ─── Theme chips ─── */
+  .themes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+    max-width: 680px;
+  }
+  .theme-chip {
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line-soft);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .theme-chip .swatch {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    flex: 0 0 32px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  .theme-chip .tn { color: var(--white); font-weight: 600; font-size: 13px; }
+  .theme-chip .td { color: var(--text-dim); font-size: 11px; letter-spacing: 0.5px; }
+  .theme-chip.default { border-color: rgba(184,72,192,0.40); }
+  .theme-chip.default::after {
+    content: 'default';
+    margin-left: auto;
+    font-size: 9px;
+    color: var(--magenta-2);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* ─── Footer ─── */
+  footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line-soft);
+    color: var(--text-dim);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  footer .brand-line { color: var(--text-mute); margin-bottom: 4px; }
+  footer .brand-line span { color: var(--magenta-2); font-weight: 600; }
+
+  /* ─── Search ─── */
+  .search-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 0 0 22px;
+    padding: 9px 12px;
+    background: var(--surface);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius-sm);
+    color: var(--text-dim);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: border-color .15s, color .15s;
+  }
+  .search-trigger:hover { color: var(--text-mute); border-color: rgba(184,72,192,0.30); }
+  .search-trigger .icon {
+    width: 13px; height: 13px;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+    position: relative;
+    flex: 0 0 13px;
+  }
+  .search-trigger .icon::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; right: -3px;
+    width: 6px; height: 1.5px;
+    background: currentColor;
+    transform: rotate(45deg);
+    transform-origin: left center;
+  }
+  .search-trigger .label { flex: 1; }
+  .search-trigger .kbd {
+    padding: 1px 6px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', Menlo, monospace;
+    background: var(--bg-elev);
+  }
+
+  .search-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,6,14,0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1000;
+    padding-top: 12vh;
+    animation: searchFade .15s ease-out;
+  }
+  .search-overlay.open { display: flex; }
+  @keyframes searchFade { from { opacity: 0; } to { opacity: 1; } }
+
+  .search-panel {
+    width: 640px;
+    max-width: calc(100vw - 40px);
+    background: var(--bg-elev);
+    border: 1px solid rgba(184,72,192,0.25);
+    border-radius: var(--radius);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.02);
+    overflow: hidden;
+    animation: searchPop .18s ease-out;
+  }
+  @keyframes searchPop { from { transform: translateY(-8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  .search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .search-input-wrap .icon {
+    width: 16px; height: 16px;
+    border: 1.8px solid var(--magenta-2);
+    border-radius: 50%;
+    position: relative;
+    flex: 0 0 16px;
+  }
+  .search-input-wrap .icon::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; right: -4px;
+    width: 8px; height: 1.8px;
+    background: var(--magenta-2);
+    transform: rotate(45deg);
+    transform-origin: left center;
+  }
+  .search-input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--white);
+    font-size: 16px;
+    font-family: inherit;
+    padding: 4px 0;
+  }
+  .search-input::placeholder { color: var(--text-dim); }
+
+  .search-close {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-family: 'SF Mono', Menlo, monospace;
+    cursor: pointer;
+  }
+
+  .search-results {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .search-empty {
+    padding: 28px 20px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .search-hit {
+    display: block;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+  }
+  .search-hit.active,
+  .search-hit:hover {
+    background: rgba(184,72,192,0.10);
+    border-color: rgba(184,72,192,0.30);
+  }
+  .search-hit .crumb {
+    font-size: 10px;
+    color: var(--magenta-2);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .search-hit .title {
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .search-hit .snippet {
+    font-size: 12px;
+    color: var(--text-mute);
+    line-height: 1.45;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .search-hit mark {
+    background: rgba(255,120,68,0.30);
+    color: var(--white);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .search-foot {
+    border-top: 1px solid var(--line-soft);
+    padding: 8px 16px;
+    display: flex;
+    gap: 14px;
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .search-foot span kbd {
+    font-family: 'SF Mono', Menlo, monospace;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-right: 4px;
+    color: var(--text-mute);
+    font-size: 10px;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; gap: 24px; padding: 32px 24px 64px; }
+    aside { position: static; }
+    .hero h1 { font-size: 38px; }
+    .cards { grid-template-columns: 1fr; }
+    .knob-list { grid-template-columns: 1fr; gap: 0; }
+    .knob-list dt { border-bottom: none; padding-bottom: 2px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- ───────────── Sidebar ───────────── -->
+<aside>
+  <div class="brand">
+    <div class="brand-mark"></div>
+    <div>
+      <div class="brand-name">PickToMic</div>
+      <div class="brand-tag">User Manual</div>
+    </div>
+  </div>
+  <button class="search-trigger" id="searchTrigger" aria-label="Search the manual">
+    <span class="icon"></span>
+    <span class="label">Search&hellip;</span>
+    <span class="kbd">&#8984;K</span>
+  </button>
+  <nav>
+    <ol>
+      <li><a href="#welcome">Welcome</a></li>
+      <li><a href="#quickstart">Quick Start</a></li>
+      <li><a href="#capture">Capture</a></li>
+      <li><a href="#irmix">IR Mix</a></li>
+      <li><a href="#tone">Tone</a></li>
+      <li><a href="#reverb">Reverb</a></li>
+      <li><a href="#saturation">Saturation</a></li>
+      <li><a href="#presets">Presets</a></li>
+      <li><a href="#ab">A/B</a></li>
+      <li><a href="#themes">Themes</a></li>
+      <li><a href="#about">About</a></li>
+    </ol>
+  </nav>
+</aside>
+
+<!-- ───────────── Main ───────────── -->
+<main>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="eyebrow">Acoustic Tone Capture</div>
+    <h1>From a pickup<br>to a <span class="accent">microphone</span>.</h1>
+    <p class="lead">
+      PickToMic listens to a pair of recordings &mdash; a DI and the same performance through a mic &mdash;
+      and learns the path between them. Drop it on any DI track and play the mic.
+    </p>
+    <div class="meta">
+      <span><strong>Version</strong> &nbsp; 1.0</span>
+      <span><strong>Format</strong> &nbsp; AU &middot; VST3</span>
+      <span><strong>macOS</strong> &nbsp; 11+</span>
+    </div>
+  </header>
+
+  <!-- 1 Welcome -->
+  <section id="welcome">
+    <h2>01 &mdash; Welcome</h2>
+    <div class="title">Capture once. Play through it forever.</div>
+    <p class="lead">
+      Feed PickToMic two files of the same take &mdash; a DI from your pickup, and a mic recording you love.
+      In a few seconds it builds a portable tone you can apply to any future DI in real time.
+    </p>
+    <p>
+      The interface is built around one idea: the journey from the pickup to the mic. Everything else
+      &mdash; faders, tone, reverb, saturation &mdash; is there to taste it, not to question it.
+    </p>
+  </section>
+
+  <!-- Hero screenshot -->
+  <div class="shot"><img src="screenshots/01-overview.png" alt="PickToMic overview" /></div>
+  <div class="caption">PickToMic &mdash; default theme: Dark Neon.</div>
+
+  <!-- 2 Quick Start -->
+  <section id="quickstart">
+    <h2>02 &mdash; Quick Start</h2>
+    <div class="title">Five steps to your first capture.</div>
+    <ol class="steps">
+      <li>
+        <strong>Insert PickToMic on your DI track</strong>
+        <span>Mono or stereo &mdash; the plugin adapts.</span>
+      </li>
+      <li>
+        <strong>Browse a DI file</strong>
+        <span>The dry signal from your pickup.</span>
+      </li>
+      <li>
+        <strong>Browse a Mic file of the same take</strong>
+        <span>The same performance through any mic you love.</span>
+      </li>
+      <li>
+        <strong>Press Capture Tone</strong>
+        <span>A few seconds. PickToMic builds three impulse responses.</span>
+      </li>
+      <li>
+        <strong>Play your DI</strong>
+        <span>Blend the faders. Save the preset. You&rsquo;re done.</span>
+      </li>
+    </ol>
+    <div class="callout">
+      The two files should be the <em>same performance</em>. Length matters less than musicality &mdash;
+      seven seconds of expressive playing is enough.
+    </div>
+  </section>
+
+  <!-- 3 Capture -->
+  <section id="capture">
+    <h2>03 &mdash; Capture</h2>
+    <div class="title">The DI, the mic, and the moment between them.</div>
+    <p>
+      The Capture panel is where the two files meet. Drag them in, or use the Browse buttons.
+      Once both are loaded, <strong>Capture Tone</strong> becomes active.
+    </p>
+    <p>
+      When the capture is complete, the three IR faders animate to their suggested mix. Press
+      <strong>Lock IR</strong> if you want to keep this exact tone while you audition presets.
+    </p>
+    <div class="shot"><img src="screenshots/02-capture.png" alt="Capture panel" /></div>
+    <div class="caption">Capture panel &mdash; DI, Mic, and the trigger between them.</div>
+  </section>
+
+  <!-- 4 IR Mix -->
+  <section id="irmix">
+    <h2>04 &mdash; IR Mix</h2>
+    <div class="title">Two faders. One sound.</div>
+
+    <figure class="figure tiny right">
+      <img src="screenshots/03-irmix.png" alt="IR Mix faders" />
+      <figcaption>IR Mix &mdash; Tone and Body.</figcaption>
+    </figure>
+    <p>
+      Each capture produces two impulse responses, blended into a single signal. The dome
+      above each fader toggles it on and off. Pull a fader down and that character recedes;
+      bring it up and it leans into the mix. <strong>Reset Mix</strong> restores the
+      suggested blend from the original capture, and the preset selector above the faders
+      &mdash; <em>Classical Guitar</em>, <em>Acoustic</em>, and more &mdash; switches the
+      entire factory profile in one click.
+    </p>
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr); clear: both;">
+      <div class="card">
+        <div class="label">Fader 1</div>
+        <div class="name">Tone</div>
+        <div class="desc">The primary capture &mdash; the full character of the mic on the source.</div>
+      </div>
+      <div class="card">
+        <div class="label">Fader 2</div>
+        <div class="name">Body</div>
+        <div class="desc">A companion response focused on low-mid weight and resonance.</div>
+      </div>
+    </div>
+
+    <figure class="figure small left">
+      <img src="screenshots/10-ir1-fft.png" alt="IR1 (Punch) FFT in spectrum panel" />
+      <figcaption>IR1 (Punch) &mdash; live FFT in the spectrum panel.</figcaption>
+    </figure>
+    <p>
+      The dome above each fader doubles as a focus button: tap it and the spectrum panel
+      switches to a live FFT of just that IR &mdash; the orange bars on the right show the
+      pickup&rsquo;s upper harmonics, the polygonal trace on the left traces the body
+      resonances. Pull the fader and watch the response curve breathe in real time.
+    </p>
+  </section>
+
+  <!-- 5 Advanced -->
+  <section id="tone">
+    <h2>05 &mdash; Advanced</h2>
+    <div class="title">Eight knobs. One row. One direction each.</div>
+    <p>
+      The Advanced row sits below the spectrum display. Every knob moves the sound on a single
+      axis &mdash; no hidden cross-coupling. The dome above each knob bypasses that stage; the
+      label below opens its detail popup where one exists.
+    </p>
+    <div class="shot"><img src="screenshots/04-advanced.png" alt="Advanced row" /></div>
+    <div class="caption">The Advanced row &mdash; left to right.</div>
+    <dl class="knob-list">
+      <dt>Spectral</dt><dd>Tonal correction from the IR toward the mic reference. 0% off, 100% full.</dd>
+      <dt>Transient</dt><dd>Attack and sustain shaping. Click the label for the detail popup.</dd>
+      <dt>EQ</dt><dd>Scales the captured EQ bands. 100% as captured, 0% flat.</dd>
+      <dt>Comp</dt><dd>Dynamics control with a musical knee. Click the label for the detail popup.</dd>
+      <dt>Saturate</dt><dd>Harmonic warmth in parallel. Click the label for the detail popup.</dd>
+      <dt>Reverb</dt><dd>Dual-engine plate &amp; hall, tuned for acoustic sources. Click the label for the detail popup.</dd>
+      <dt>Width</dt><dd>0% mono, 100% as captured, 200% extra wide.</dd>
+      <dt>Mix</dt><dd>Pick&hairsp;&harr;&hairsp;Mic blend &mdash; the global dry/wet of the captured chain.</dd>
+    </dl>
+    <p>
+      The two global level knobs &mdash; <strong>Input</strong> and <strong>Output</strong> &mdash;
+      live to the right of the spectrum, with a <strong>Link</strong> toggle for inverse gain
+      staging.
+    </p>
+    <div class="callout">
+      Each detail popup (Transient, Comp, Saturate, Reverb) opens inside the spectrum panel &mdash;
+      the rest of the UI stays put.
+    </div>
+
+    <h3 style="margin-top: 36px;">Transient &mdash; Broad &amp; Bands</h3>
+
+    <figure class="figure right">
+      <img src="screenshots/09-transient-broad.png" alt="Transient Shaper — Broad mode" />
+      <figcaption>Transient (Broad) &mdash; one envelope, full range.</figcaption>
+    </figure>
+    <p>
+      Click the <strong>Transient</strong> label to open the shaper. The right side carries
+      two large knobs &mdash; <strong>Attack</strong> sharpens or softens the leading edge of
+      each note; <strong>Sustain</strong> stretches or trims the body. <strong>Mix</strong>
+      sets parallel blend, and <strong>Smooth</strong> slows the envelope follower for less
+      pumping on slow material. The big curve in the center is the live envelope &mdash; the
+      shape you&rsquo;re actually applying to every note.
+    </p>
+
+    <figure class="figure left">
+      <img src="screenshots/07-transient-bands.png" alt="Transient Shaper — Bands mode" />
+      <figcaption>Transient (Bands) &mdash; per-band Attack &amp; Sustain.</figcaption>
+    </figure>
+    <p>
+      The <strong>Broad / Bands</strong> toggle (top left of the popup) switches between a
+      single full-range envelope and a two-band split: a high band (red) for plectrum and
+      pick noise, and a mid/low band (blue) for body. Each band gets its own Attack and
+      Sustain pair on the right &mdash; useful when you want to tame plectrum on the highs
+      while letting the body breathe.
+    </p>
+
+    <h3 style="margin-top: 36px; clear: both;">Width &mdash; M/S field</h3>
+
+    <figure class="figure tiny right">
+      <img src="screenshots/08-width-popup.png" alt="Stereo Width — polar view" />
+      <figcaption>Width &mdash; M/S compass.</figcaption>
+    </figure>
+    <p>
+      Click the <strong>Width</strong> label to open the polar view. The compass shows where
+      the signal sits in the stereo field &mdash; <strong>M</strong> at the top
+      (center / mono), <strong>L</strong> / <strong>R</strong> on the sides, and
+      <strong>S</strong> on the right of the dial for the pure sides component. The wedge
+      narrows toward mono at the bottom of the slider and opens out as width climbs above
+      100%. Drag the slider beneath the compass to set the amount &mdash; the wedge updates
+      live as you move.
+    </p>
+  </section>
+
+  <!-- 6 Reverb -->
+  <section id="reverb">
+    <h2>06 &mdash; Reverb</h2>
+    <div class="title">Two engines, one tail.</div>
+    <p>
+      Click the <strong>Reverb</strong> label to open the popup. Two engines &mdash; <strong>Plate</strong>
+      and <strong>Hall</strong> &mdash; run in parallel, each with its own decay, pre-delay, and tonal
+      controls. The tail visualises in real time between them.
+    </p>
+    <p>
+      The bottom row carries the shared modulation and balance: <strong>Stereo</strong>, <strong>Tilt</strong>,
+      <strong>Mod</strong>, <strong>Depth</strong>, <strong>Bal</strong> (Plate&hairsp;&harr;&hairsp;Hall),
+      and <strong>Amount</strong>. Pick a factory space from the menu at the top &mdash; <em>Classical
+      Hall</em>, <em>Studio Plate</em> and more &mdash; or sculpt your own.
+    </p>
+    <div class="shot"><img src="screenshots/06-reverb-popup.png" alt="Reverb popup — dual engine" /></div>
+    <div class="caption">The Reverb popup &mdash; Plate left, Hall right, tail visualised between them.</div>
+  </section>
+
+  <!-- 7 Saturation -->
+  <section id="saturation">
+    <h2>07 &mdash; Saturation</h2>
+    <div class="title">Harmonics, kept on a leash.</div>
+    <p>
+      Click <strong>Saturate</strong> to open the popup. You&rsquo;ll see a live channel strip with
+      the dry input on the left and the saturated output on the right, plus a real-time spectrum
+      showing the harmonics you&rsquo;re adding.
+    </p>
+    <p>
+      The <strong>Amount</strong> knob mixes the saturated signal in parallel. The character
+      stays the same; only the intensity changes.
+    </p>
+  </section>
+
+  <!-- 8 Presets -->
+  <section id="presets">
+    <h2>08 &mdash; Presets</h2>
+    <div class="title">36 starting points. One lock.</div>
+    <p>
+      The factory library covers acoustic guitar, electric, bass, voice and more &mdash; each
+      with Direct, Mix and Producer variants. Pick a preset and only the tone knobs move;
+      your captured IR stays untouched if <strong>Lock IR</strong> is engaged.
+    </p>
+    <p>
+      <strong>Save</strong> writes your current state &mdash; IR plus knobs &mdash; into a single
+      <em>.ptm</em> file you can share or back up. Presets live in the Settings menu under
+      <strong>Open Presets Folder</strong>.
+    </p>
+  </section>
+
+  <!-- 9 A/B -->
+  <section id="ab">
+    <h2>09 &mdash; A/B</h2>
+    <div class="title">Two states. One ear.</div>
+    <p>
+      Toggle between <strong>A</strong> and <strong>B</strong> to compare two configurations
+      instantly. <strong>Copy</strong> duplicates the current state into the other slot so you
+      can branch from a known-good sound. Full undo / redo is always available.
+    </p>
+  </section>
+
+  <!-- 10 Themes -->
+  <section id="themes">
+    <h2>10 &mdash; Themes</h2>
+    <div class="title">Pick the room you want to work in.</div>
+    <p>
+      Open the Settings menu &rarr; <strong>Theme</strong>. The plugin ships with six palettes,
+      from deep neon to warm wood to paper-white. Choose <strong>Set Current as Default</strong>
+      and every new instance opens in your colour.
+    </p>
+    <div class="themes">
+      <div class="theme-chip default">
+        <div class="swatch" style="background: radial-gradient(circle at 30% 30%, #b848c0, #121218 70%);"></div>
+        <div><div class="tn">Dark Neon</div><div class="td">Magenta on charcoal</div></div>
+      </div>
+      <div class="theme-chip">
+        <div class="swatch" style="background: radial-gradient(circle at 30% 30%, #b848c0, #0e0c14 70%);"></div>
+        <div><div class="tn">Obsidian</div><div class="td">Deep violet glow</div></div>
+      </div>
+      <div class="theme-chip">
+        <div class="swatch" style="background: linear-gradient(135deg, #D09838, #6b4430);"></div>
+        <div><div class="tn">Simple Wood</div><div class="td">Honey + grain</div></div>
+      </div>
+      <div class="theme-chip">
+        <div class="swatch" style="background: linear-gradient(135deg, #fdfcf9, #e55530);"></div>
+        <div><div class="tn">Monolith</div><div class="td">Paper + tomato</div></div>
+      </div>
+      <div class="theme-chip">
+        <div class="swatch" style="background: radial-gradient(circle at 30% 30%, #7858c0, #0a1a2e 70%);"></div>
+        <div><div class="tn">Futuristic</div><div class="td">Cool washed purple</div></div>
+      </div>
+      <div class="theme-chip">
+        <div class="swatch" style="background: radial-gradient(circle at 30% 30%, #a890f0, #1a1626 70%);"></div>
+        <div><div class="tn">Amethyst</div><div class="td">Classic purple</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 About -->
+  <section id="about">
+    <h2>11 &mdash; About</h2>
+    <div class="title">Quiet machine.</div>
+    <p>
+      PickToMic was designed and developed by <strong>Idan Armoni</strong>. The capture engine,
+      the IR set and the tone chain are tuned to keep the listener &mdash; not the meter &mdash;
+      in the centre of the room.
+    </p>
+  </section>
+
+  <footer>
+    <div class="brand-line"><span>PickToMic</span> &middot; Acoustic Tone Capture</div>
+    <div>Version 1.0 &middot; &copy; 2026 IdAudio &middot; All rights reserved.</div>
+  </footer>
+
+</main>
+
+</div>
+
+<!-- ───────────── Search overlay ───────────── -->
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-panel">
+    <div class="search-input-wrap">
+      <span class="icon"></span>
+      <input type="text" class="search-input" id="searchInput"
+             placeholder="Search the manual&hellip;" autocomplete="off"
+             spellcheck="false" aria-label="Search the manual">
+      <button class="search-close" id="searchClose" aria-label="Close">ESC</button>
+    </div>
+    <div class="search-results" id="searchResults">
+      <div class="search-empty">Start typing to search.</div>
+    </div>
+    <div class="search-foot">
+      <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate</span>
+      <span><kbd>&crarr;</kbd> open</span>
+      <span><kbd>esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ─── Build search index from rendered sections ───
+  const sections = Array.from(document.querySelectorAll('main section')).map(s => {
+    const id = s.id;
+    const eyebrow = (s.querySelector('h2')?.textContent || '').trim();
+    const title = (s.querySelector('.title')?.textContent || '').trim();
+    // Concatenate all text content (paragraphs, list items, cards)
+    const text = Array.from(s.querySelectorAll('p, li, dt, dd, .card .name, .card .desc'))
+      .map(n => n.textContent.replace(/\s+/g, ' ').trim())
+      .filter(Boolean)
+      .join(' ');
+    return { id, eyebrow, title, text };
+  });
+
+  // ─── Tokenizer ───
+  const tokenize = (s) => (s || '')
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean);
+
+  // ─── Score a section against a query ───
+  // Higher score = better match. Factors:
+  //   • exact phrase in title/text  (+10 / +6)
+  //   • each token: in title (+3), in text (+1), prefix-match (+0.5)
+  //   • shorter sections win marginal ties (avoids ranking the long Advanced
+  //     section above a tighter hit)
+  const score = (section, query) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return 0;
+    const titleLC = (section.title + ' ' + section.eyebrow).toLowerCase();
+    const textLC  = section.text.toLowerCase();
+    let s = 0;
+    if (titleLC.includes(q)) s += 10;
+    if (textLC.includes(q))  s += 6;
+    const qTokens = tokenize(q);
+    for (const t of qTokens) {
+      if (!t) continue;
+      if (titleLC.includes(t)) s += 3;
+      else if (textLC.includes(t)) s += 1;
+      else {
+        // prefix-match within any word
+        const re = new RegExp('\\b' + t.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&'), 'i');
+        if (re.test(textLC)) s += 0.5;
+      }
+    }
+    return s - Math.min(2, section.text.length / 10000);
+  };
+
+  // ─── Build a snippet around the first match ───
+  const escapeHTML = (s) => s
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const snippet = (section, query) => {
+    const q = query.trim().toLowerCase();
+    if (!q) return '';
+    const tokens = [q, ...tokenize(q)].filter(Boolean);
+    const text = section.text;
+    // Find earliest token in the text
+    let pos = -1, hitLen = 0;
+    for (const t of tokens) {
+      const i = text.toLowerCase().indexOf(t);
+      if (i >= 0 && (pos < 0 || i < pos)) { pos = i; hitLen = t.length; }
+    }
+    let start, end;
+    if (pos < 0) { start = 0; end = Math.min(text.length, 160); }
+    else { start = Math.max(0, pos - 60); end = Math.min(text.length, pos + 120); }
+    let s = text.slice(start, end);
+    if (start > 0) s = '&hellip; ' + s;
+    if (end < text.length) s = s + ' &hellip;';
+    s = escapeHTML(s);
+    // Highlight every token
+    for (const t of new Set(tokens)) {
+      if (t.length < 2) continue;
+      const re = new RegExp('(' + t.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + ')', 'gi');
+      s = s.replace(re, '<mark>$1</mark>');
+    }
+    return s;
+  };
+
+  // ─── DOM refs ───
+  const overlay  = document.getElementById('searchOverlay');
+  const trigger  = document.getElementById('searchTrigger');
+  const closeBtn = document.getElementById('searchClose');
+  const input    = document.getElementById('searchInput');
+  const results  = document.getElementById('searchResults');
+
+  let activeIdx = 0;
+  let hits = [];
+
+  const renderResults = (query) => {
+    const q = (query || '').trim();
+    if (!q) {
+      hits = [];
+      results.innerHTML = '<div class="search-empty">Start typing to search.</div>';
+      return;
+    }
+    hits = sections
+      .map(sec => ({ sec, s: score(sec, q) }))
+      .filter(x => x.s > 0)
+      .sort((a, b) => b.s - a.s)
+      .slice(0, 8)
+      .map(x => x.sec);
+
+    if (!hits.length) {
+      results.innerHTML = '<div class="search-empty">No matches for &ldquo;'
+        + escapeHTML(q) + '&rdquo;.</div>';
+      return;
+    }
+    activeIdx = 0;
+    results.innerHTML = hits.map((h, i) => `
+      <a class="search-hit${i === 0 ? ' active' : ''}" href="#${h.id}" data-i="${i}">
+        <div class="crumb">${escapeHTML(h.eyebrow)}</div>
+        <div class="title">${escapeHTML(h.title)}</div>
+        <div class="snippet">${snippet(h, q)}</div>
+      </a>
+    `).join('');
+  };
+
+  const setActive = (i) => {
+    if (!hits.length) return;
+    activeIdx = (i + hits.length) % hits.length;
+    Array.from(results.querySelectorAll('.search-hit')).forEach((el, idx) => {
+      el.classList.toggle('active', idx === activeIdx);
+      if (idx === activeIdx) el.scrollIntoView({ block: 'nearest' });
+    });
+  };
+
+  const open = () => {
+    overlay.classList.add('open');
+    setTimeout(() => input.focus(), 30);
+  };
+  const close = () => {
+    overlay.classList.remove('open');
+    input.value = '';
+    renderResults('');
+  };
+  const go = (i) => {
+    if (!hits.length) return;
+    const target = hits[i ?? activeIdx];
+    if (!target) return;
+    close();
+    const el = document.getElementById(target.id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Flash highlight
+      el.style.transition = 'background-color .6s ease';
+      el.style.backgroundColor = 'rgba(184,72,192,0.08)';
+      setTimeout(() => { el.style.backgroundColor = ''; }, 1200);
+    }
+    history.replaceState(null, '', '#' + target.id);
+  };
+
+  // ─── Event wiring ───
+  trigger.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+
+  input.addEventListener('input', (e) => renderResults(e.target.value));
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(activeIdx + 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(activeIdx - 1); }
+    else if (e.key === 'Enter') { e.preventDefault(); go(); }
+    else if (e.key === 'Escape') { e.preventDefault(); close(); }
+  });
+
+  results.addEventListener('click', (e) => {
+    const a = e.target.closest('.search-hit');
+    if (!a) return;
+    e.preventDefault();
+    go(parseInt(a.dataset.i, 10));
+  });
+
+  // Global shortcuts: Cmd-K / Ctrl-K to open; "/" to open; ESC to close
+  document.addEventListener('keydown', (e) => {
+    const isCmdK = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k';
+    const isSlash = e.key === '/' && document.activeElement !== input
+                    && !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+    if (isCmdK || isSlash) {
+      e.preventDefault();
+      overlay.classList.contains('open') ? close() : open();
+    } else if (e.key === 'Escape' && overlay.classList.contains('open')) {
+      close();
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
